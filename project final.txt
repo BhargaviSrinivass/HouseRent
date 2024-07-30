@@ -1,0 +1,311 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct
+{
+    char address[100];
+    char pincode[10];
+    char rooms;
+    char food;
+    float rentamount;
+    char status;
+}rent;
+
+int getcount()
+{
+    FILE*fp;
+    int n;
+    fp=fopen("D:/c/house_rent.txt","r");
+    fseek(fp,1,SEEK_END);
+    n=ftell(fp)/sizeof(rent);
+    fseek(fp,1,SEEK_SET);
+    fclose(fp);
+    return n;
+}
+
+int main()
+{
+    int ch;
+    float r1,r2;
+    char address[100],pincode[10],roomtype,foodtype;
+    rent r;
+    int i,n;
+    FILE*fp;
+
+    while(1)
+    {
+        printf("1.Post details of the house for rent\n");
+        printf("2.List all houses available for rent\n");
+        printf("3.Search by address\n");
+        printf("4.Search by pincode\n");
+        printf("5.Rooms based search, 1-1BHK 2-2BHK 3-3BHK\n");
+        printf("6.Food based search, 1-Veg only 2-Both veg and non veg friendly\n");
+        printf("7.Search by budget\n");
+        printf("8.Change status\n");
+        printf("9.List all rented houses\n");
+        printf("10.Delete post\n");
+        printf("11.Exit\n");
+        scanf("%d",&ch);
+
+
+        if(ch==1)
+         {
+             fflush(stdin);
+             printf("Enter address:");
+             gets(r.address);
+
+             fflush(stdin);
+             printf("Enter pincode:");
+             gets(r.pincode);
+
+             printf("Enter number of bedrooms\n (1-1BHK 2-2BHK 3-3BHK):");
+             scanf("%c",&r.rooms);
+
+             fflush(stdin);
+             printf("Is is non-veg friendly? 1-No 2-Yes");
+             scanf("%c",&r.food);
+
+             fflush(stdin);
+             printf("Enter the rent amount:");
+             scanf("%f",&r.rentamount);
+             r.status='n';
+
+             fp=fopen("D:/c/house_rent.txt","a");
+             fwrite(&r,sizeof(r),1,fp);
+             fclose(fp);
+             printf("------------------------------\n");
+             printf("HOUSE POSTED SUCCESSFULLY!\n");
+             printf("------------------------------\n");
+         }
+         else if(ch==2)
+         {
+             fflush(stdin);
+             n=getcount();
+             fp=fopen("D:/c/house_rent.txt","r");
+             printf("-----------------------------------------------------------------------\n");
+             printf("                   ALL HOUSES AVAILABLE FOR RENT                       \n");
+             printf("----------------------------------------------------------------------\n");
+             for(i=1;i<=n;i++)
+             {
+                 fread(&r,sizeof(r),1,fp);
+                 if(r.status=='n')
+                 {
+                   printf("Address = %s,%s\n Rent amount = %.2f\n",r.address,r.pincode,r.rentamount);
+                   if(r.rooms=='1') printf("Number of bedrooms = 1BHK\n");
+                   else if(r.rooms=='2') printf("Number of bedrooms = 2BHK\n");
+                   else printf("Number of bedrooms = 3BHK\n");
+
+                   if(r.food=='1') printf("food = veg only\n");
+                    else printf("food = both veg and non veg friendly\n");
+
+                    printf("----------------------------------------------------------------------\n");
+                 }
+             }
+             fclose(fp);
+         }
+         else if(ch==3)
+         {
+             fflush(stdin);
+             printf("Enter the location you want a house for rent:");
+             gets(address);
+             strlwr(address);
+             n=getcount();
+             fp=fopen("D:/c/house_rent.txt","r");
+             printf("----------------------------------------------------------------------\n");
+             printf("                     HOUSES AVAILABLE FOR YOU                        \n");
+             printf("----------------------------------------------------------------------\n");
+
+             for(i=1;i<=n;i++)
+             {
+                 fread(&r,sizeof(r),1,fp);
+                 strlwr(r.address);
+                 if(strstr(r.address,address)!=0 && r.status=='n')
+                 {
+                    printf("Address = %s,%s\n Rent amount = %.2f\n",r.address,r.pincode,r.rentamount);
+                   if(r.rooms=='1') printf("Number of bedrooms = 1BHK\n");
+                   else if(r.rooms=='2') printf("C = 2BHK\n");
+                   else printf("Number of bedrooms = 3BHK\n");
+
+                   if(r.food=='1') printf("food = veg only\n");
+                    else printf("food = both veg and non veg friendly\n");
+
+                    printf("----------------------------------------------------------------------\n");
+                 }
+             }
+             fclose(fp);
+         }
+         else if(ch==4)
+         {
+             fflush(stdin);
+             printf("Enter the pincode to search:");
+             gets(pincode);
+             n=getcount();
+             fp=fopen("D:/c/house_rent.txt","r");
+             printf("----------------------------------------------------------------------\n");
+             printf("                     HOUSES AVAILABLE FOR YOU                        \n");
+             printf("----------------------------------------------------------------------\n");
+
+             for(i=1;i<=n;i++)
+             {
+                 fread(&r,sizeof(r),1,fp);
+                 if(stricmp(pincode,r.pincode)==0 && r.status=='n')
+                 {
+                    printf("Address = %s,%s\n Rent amount = %.2f\n",r.address,r.pincode,r.rentamount);
+                   if(r.rooms=='1') printf("Number of bedrooms = 1BHK\n");
+                   else if(r.rooms=='2') printf("C = 2BHK\n");
+                   else printf("Number of bedrooms = 3BHK\n");
+
+                   if(r.food=='1') printf("food = veg only\n");
+                    else printf("food = both veg and non veg friendly\n");
+
+                    printf("----------------------------------------------------------------------\n");
+                 }
+             }
+             fclose(fp);
+         }
+         else if(ch==5)
+         {
+             fflush(stdin);
+             printf("Enter the number of bedrooms you prefer\n(1-1BHK,2-2BHK,3-3BHK):");
+             scanf("%c",&roomtype);
+             n=getcount();
+             fp=fopen("D:/c/house_rent.txt","r");
+             printf("-----------------------------------------------------------------------\n");
+             printf("                     HOUSES AVAILABLE FOR YOU                        \n");
+             printf("----------------------------------------------------------------------\n");
+
+             for(i=1;i<=n;i++)
+             {
+                 fread(&r,sizeof(r),1,fp);
+                 if(r.rooms==roomtype&&r.status=='n')
+                 {
+                    printf("Address = %s,%s\n Rent amount = %.2f\n",r.address,r.pincode,r.rentamount);
+                   if(r.rooms=='1') printf("Number of bedrooms = 1BHK\n");
+                   else if(r.rooms=='2') printf("Number of bedrooms = 2BHK\n");
+                   else printf("Number of bedrooms = 3BHK\n");
+
+                   if(r.food=='1') printf("food = veg only\n");
+                    else printf("food = both veg and non veg friendly\n");
+                    printf("----------------------------------------------------------------------\n");
+                 }
+             }
+             fclose(fp);
+         }
+         else if(ch==6)
+         {
+             fflush(stdin);
+             printf("Food type\n(1-Veg only 2-Both veg and non veg):");
+             scanf("%c",&foodtype);
+             n=getcount();
+             fp=fopen("D:/c/house_rent.txt","r");
+             printf("-----------------------------------------------------------------------\n");
+             printf("                     HOUSES AVAILABLE FOR YOU                        \n");
+             printf("----------------------------------------------------------------------\n");
+
+             for(i=1;i<=n;i++)
+             {
+                 fread(&r,sizeof(r),1,fp);
+                 if(r.food==foodtype&&r.status=='n')
+                 {
+                    printf("Address = %s,%s\n Rent amount = %.2f\n",r.address,r.pincode,r.rentamount);
+                   if(r.rooms=='1') printf("Number of bedrooms = 1BHK\n");
+                   else if(r.rooms=='2') printf("Number of bedrooms = 2BHK\n");
+                   else printf("Number of bedrooms = 3BHK\n");
+
+                   if(r.food=='1') printf("food = veg only\n");
+                    else printf("food = both veg and non veg friendly\n");
+                    printf("------------------------------------------------------------------\n");
+                 }
+             }
+             fclose(fp);
+         }
+         else if(ch==7)
+         {
+             fflush(stdin);
+             printf("Enter the short and end range of your budget:\n");
+             scanf("%f%f",&r1,&r2);
+             n=getcount();
+             fp=fopen("D:/c/house_rent.txt","r");
+             printf("--------------------------------------------------------------------------\n");
+             printf("                     HOUSES AVAILABLE FOR YOU                        \n");
+             printf("----------------------------------------------------------------------\n");
+
+             for(i=1;i<=n;i++)
+             {
+                 fread(&r,sizeof(r),1,fp);
+                 if(r.rentamount>=r1&&r.rentamount<=r2&&r.status=='n')
+                 {
+                     printf("Address = %s,%s\n Rent amount = %.2f\n",r.address,r.pincode,r.rentamount);
+                   if(r.rooms=='1') printf("Number of bedrooms = 1BHK\n");
+                   else if(r.rooms=='2') printf("Number of bedrooms = 2BHK\n");
+                   else printf("Number of bedrooms = 3BHK\n");
+
+                   if(r.food=='1') printf("food = veg only\n");
+                    else printf("food = both veg and non veg friendly\n");
+                    printf("------------------------------------------------------------------\n");
+                 }
+             }
+             fclose(fp);
+         }
+         else if(ch==8)
+         {
+             fflush(stdin);
+             printf("Enter the full address to update status");
+             gets(address);
+             n=getcount();
+             fp=fopen("D:/c/house_rent.txt","r+");
+             for(i=0;i<=n;i++)
+             {
+                 fread(&r,sizeof(r),1,fp);
+                 if(stricmp(address,r.address)==0)
+                 {
+                     r.status='y';
+                     fseek(fp,-sizeof(rent),SEEK_CUR);
+                     fwrite(&r,sizeof(r),1,fp);
+                     break;
+                 }
+             }
+             fclose(fp);
+         }
+         else if(ch==9)
+         {
+
+             fflush(stdin);
+             n=getcount();
+             fp=fopen("D:/c/house_rent.txt","r");
+             printf("-----------------------------------------------------------------------\n");
+             printf("                         HOUSES ALREADY RENTED                         \n");
+             printf("----------------------------------------------------------------------\n");
+
+             for(i=1;i<=n;i++)
+             {
+                 fread(&r,sizeof(r),1,fp);
+                 if(r.status=='y')
+                 {
+                   printf("Address = %s,%s\n Rent amount = %.2f\n",r.address,r.pincode,r.rentamount);
+                   if(r.rooms=='1') printf("Number of bedrooms = 1BHK\n");
+                   else if(r.rooms=='2') printf("Number of bedrooms = 2BHK\n");
+                   else printf("Number of bedrooms = 3BHK\n");
+
+                   if(r.food=='1') printf("food = veg only\n");
+                    else printf("food = both veg and non veg friendly\n");
+
+                    printf("----------------------------------------------------------------------\n");
+                 }
+             }
+             fclose(fp);
+         }
+         else if(ch==10)
+         {
+             fflush(stdin);
+             printf("Sir will teach");
+         }
+         else
+         {
+             fflush(stdin);
+         printf("THANKYOU FOR VISITING THE HOUSE RENT APPLICATION\n");
+            break;
+         }
+    }
+    return 0;
+}
